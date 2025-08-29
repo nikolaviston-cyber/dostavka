@@ -1,0 +1,307 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Удобная доставка по России</title>
+  <meta name="description" content="Курьерская служба: оформление отправки, калькулятор стоимости, тарифы, история компании и отзывы. Зеленая тема."/>
+  <style>
+    :root{
+      --green:#12a150; --green-600:#0e8744; --green-700:#0b6d38;
+      --bg:#f6f8f7; --card:#ffffff; --text:#1f2328; --muted:#667085; --border:#e6e7ea; --ring:rgba(18,161,80,.25);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0;background:var(--bg);color:var(--text);font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif}
+    .container{max-width:1120px;margin:0 auto;padding:0 20px}
+
+    /* Header */
+    .header{position:sticky;top:0;background:#fff;border-bottom:1px solid var(--border);z-index:50}
+    .header-inner{display:flex;align-items:center;justify-content:space-between;padding:14px 0}
+    .brand{display:flex;align-items:center;gap:10px;text-decoration:none}
+    .logo{width:34px;height:34px;border-radius:50%;background:radial-gradient(circle at 30% 30%,#1bd46a 0 40%,#0e8744 60%);display:grid;place-items:center;color:#fff;font-weight:800}
+    .brand-title{font-weight:800;font-size:20px;color:var(--green)}
+    nav ul{display:flex;gap:32px;list-style:none;margin:0;padding:0;align-items:center}
+    nav li{white-space:nowrap}
+    nav a{color:var(--text);text-decoration:none;font-weight:600;display:inline-block}
+    nav a:hover{color:var(--green)}
+    .cta{display:flex;gap:10px;align-items:center}
+    .btn{appearance:none;border:1px solid var(--border);background:#fff;color:var(--text);border-radius:12px;padding:10px 16px;font-weight:700;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:8px;white-space:nowrap}
+    .btn:hover{background:#f3f5f4}
+    .btn-primary{background:var(--green);border-color:var(--green);color:#fff;padding:10px 18px;border-radius:10px}
+    .btn-primary:hover{background:var(--green-600)}
+
+    /* Hero */
+    .hero{padding:56px 0 28px}
+    .hero-inner{display:grid;grid-template-columns:1.1fr .9fr;gap:28px;align-items:center}
+    .hero h1{font-size:36px;line-height:1.2;margin:0 0 10px}
+    .hero p{color:var(--muted);margin:0 0 18px}
+    .chip{display:inline-block;background:#e9f7ef;color:var(--green-700);border:1px solid #cdeedd;padding:4px 10px;border-radius:999px;font-weight:700;font-size:13px;margin-bottom:10px}
+    .hero-card{background:var(--card);border:1px solid var(--border);border-radius:16px;box-shadow:0 6px 20px rgba(0,0,0,.06);padding:18px}
+
+    /* Sections/cards */
+    section{padding:28px 0}
+    .section-title{font-size:22px;margin:0 0 10px}
+    .muted{color:var(--muted)}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:16px;box-shadow:0 6px 18px rgba(0,0,0,.05);padding:18px}
+
+    /* Features (Как это работает) */
+    .features{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+    .feature{display:flex;gap:12px}
+    .icon{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#e9f7ef,#d7f1e4);display:grid;place-items:center;color:var(--green-700);font-size:18px}
+
+    /* Tariffs */
+    .tariffs{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+    .tariff h3{margin:0 0 4px}
+    .price{font-weight:900;font-size:26px}
+    .eta{color:var(--muted);font-weight:700}
+
+    /* About */
+    .about{display:grid;grid-template-columns:1.2fr .8fr;gap:18px}
+    .timeline{border-left:3px solid #cdeedd;padding-left:14px}
+    .tl-item{margin:10px 0}
+    .tl-item h4{margin:0 0 2px}
+
+    /* Testimonials */
+    .testimonials{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+    .review{display:flex;gap:12px}
+    .avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#e9f7ef,#d7f1e4);display:grid;place-items:center;font-weight:800;color:var(--green-700)}
+    .stars{color:#f59e0b;font-weight:700}
+
+    @media (max-width:1120px){ .features{grid-template-columns:repeat(2,1fr)} }
+    @media (max-width:980px){ .hero-inner{grid-template-columns:1fr} .features,.tariffs,.testimonials,.about{grid-template-columns:1fr 1fr} }
+    @media (max-width:560px){ nav ul{display:none} .features,.tariffs,.about,.testimonials{grid-template-columns:1fr} .btn{width:100%;justify-content:center} .hero h1{font-size:28px} }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="container header-inner">
+      <a class="brand" href="#">
+        <div class="logo">▶</div>
+        <div class="brand-title">Удобная доставка по России</div>
+      </a>
+      <nav aria-label="Главная навигация">
+        <ul>
+          <li><a href="#calc">Калькулятор</a></li>
+          <li><a href="#features">Как это работает</a></li>
+          <li><a href="#tariffs">Тарифы</a></li>
+          <li><a href="#about">О компании</a></li>
+          <li><a href="#reviews">Отзывы</a></li>
+        </ul>
+      </nav>
+      <div class="cta">
+        <a class="btn btn-primary" href="#order">Оформить отправку</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- HERO -->
+    <section class="hero">
+      <div class="container hero-inner">
+        <div>
+          <div class="chip">Доставка по России 1–3 дня</div>
+          <h1>Удобная доставка: курьером или в постамат</h1>
+          <p>Бережно доставим документы и посылки. Страховка, СМС-уведомления и прозрачные сроки на каждом этапе.</p>
+        </div>
+
+        <!-- Карточка с переходами -->
+        <div class="hero-card">
+          <h3 class="section-title">Регистрация посылки</h3>
+          <p class="muted" style="margin-top:-4px">Выберите действие, чтобы продолжить оформление.</p>
+          <div style="display:flex;gap:12px;margin-top:10px;flex-wrap:wrap">
+            <!-- CHANGE HERE: ссылка для «Дать согласие» -->
+            <a class="btn btn-primary" href="handoff1.html">Дать согласие</a>
+            <!-- CHANGE HERE: ссылка для «Отказаться» -->
+            <a class="btn" href="handoff2.html">Отказаться</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CALCULATOR -->
+    <section id="calc">
+      <div class="container card">
+        <h2 class="section-title">Калькулятор стоимости</h2>
+        <p class="muted" style="margin-top:-6px">Оцените цену и срок доставки — итоговая стоимость уточняется при оформлении.</p>
+        <div class="grid-2" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px">
+          <div class="field" style="display:flex;flex-direction:column;gap:6px">
+            <label for="from" style="font-size:13px;color:#667085;font-weight:600">Откуда</label>
+            <input class="input" id="from" placeholder="г. Москва" value="Москва" style="border:1px solid var(--border);border-radius:12px;padding:12px 12px;font-weight:600"/>
+          </div>
+          <div class="field" style="display:flex;flex-direction:column;gap:6px">
+            <label for="to" style="font-size:13px;color:#667085;font-weight:600">Куда</label>
+            <input class="input" id="to" placeholder="г. Санкт-Петербург" value="Санкт-Петербург" style="border:1px solid var(--border);border-radius:12px;padding:12px 12px;font-weight:600"/>
+          </div>
+          <div class="field" style="display:flex;flex-direction:column;gap:6px">
+            <label for="weight" style="font-size:13px;color:#667085;font-weight:600">Вес</label>
+            <div class="suffix" style="display:grid;grid-template-columns:1fr auto;align-items:center">
+              <input class="input" id="weight" type="number" min="0.1" step="0.1" value="1.0" style="border:1px solid var(--border);border-radius:12px;padding:12px 12px;font-weight:600"/>
+              <span style="padding-left:10px;color:#667085">кг</span>
+            </div>
+          </div>
+          <div class="field" style="display:flex;flex-direction:column;gap:6px">
+            <label for="service" style="font-size:13px;color:#667085;font-weight:600">Услуга</label>
+            <select id="service" class="input" style="border:1px solid var(--border);border-radius:12px;padding:12px 12px;font-weight:600">
+              <option value="eco">Эконом</option>
+              <option value="std" selected>Стандарт</option>
+              <option value="exp">Экспресс</option>
+            </select>
+          </div>
+        </div>
+        <div class="inline" style="display:flex;gap:10px;margin-top:12px">
+          <button class="btn btn-primary" onclick="calc()">Рассчитать</button>
+          <div id="calcResult" class="muted" style="font-weight:700"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FEATURES -->
+    <section id="features">
+      <div class="container">
+        <h2 class="section-title">Как это работает</h2>
+        <div class="features">
+          <div class="card feature"><div class="icon">①</div><div><h3 style="margin:0">Оформление</h3><p class="muted" style="margin:4px 0 0">Заполните адреса и параметры отправления.</p></div></div>
+          <div class="card feature"><div class="icon">②</div><div><h3 style="margin:0">Передача</h3><p class="muted" style="margin:4px 0 0">Курьер заберёт посылку или оставьте в постамате.</p></div></div>
+          <div class="card feature"><div class="icon">③</div><div><h3 style="margin:0">В пути</h3><p class="muted" style="margin:4px 0 0">Отслеживайте статусы и получайте уведомления.</p></div></div>
+          <div class="card feature"><div class="icon">④</div><div><h3 style="margin:0">Получение</h3><p class="muted" style="margin:4px 0 0">Получите посылку курьером или в постамате.</p></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TARIFFS -->
+    <section id="tariffs">
+      <div class="container">
+        <h2 class="section-title">Тарифы</h2>
+        <div class="tariffs">
+          <div class="card tariff">
+            <h3>Эконом</h3>
+            <p class="muted">Выгодно для посылок до 10 кг.</p>
+            <div class="price">от 200 ₽</div>
+            <div class="eta">Срок: 3–7 дней</div>
+            <a class="btn" href="#order" style="margin-top:10px">Выбрать</a>
+          </div>
+          <div class="card tariff">
+            <h3>Стандарт</h3>
+            <p class="muted">Баланс скорости и стоимости.</p>
+            <div class="price">от 350 ₽</div>
+            <div class="eta">Срок: 2–4 дня</div>
+            <a class="btn btn-primary" href="#order" style="margin-top:10px">Выбрать</a>
+          </div>
+          <div class="card tariff">
+            <h3>Экспресс</h3>
+            <p class="muted">Максимальная скорость, курьер по адресу.</p>
+            <div class="price">от 700 ₽</div>
+            <div class="eta">Срок: 1–2 дня</div>
+            <a class="btn" href="#order" style="margin-top:10px">Выбрать</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ABOUT -->
+    <section id="about">
+      <div class="container">
+        <h2 class="section-title">О компании</h2>
+        <div class="about card">
+          <div>
+            <p class="muted">«Удобная доставка по России» — современная логистическая платформа. Делаем доставку простой и предсказуемой для магазинов и частных клиентов.</p>
+            <div class="timeline">
+              <div class="tl-item">
+                <h4>2019 — Запуск сервиса</h4>
+                <p class="muted" style="margin:4px 0 0">Стартовали в Москве и области с первым десятком партнёров.</p>
+              </div>
+              <div class="tl-item">
+                <h4>2021 — 1 000+ клиентов</h4>
+                <p class="muted" style="margin:4px 0 0">Подключили постаматы, расширили географию на всю Россию.</p>
+              </div>
+              <div class="tl-item">
+                <h4>2024 — API для e-commerce</h4>
+                <p class="muted" style="margin:4px 0 0">Интеграции с CMS, автопечать накладных и синхронизация статусов.</p>
+              </div>
+            </div>
+          </div>
+          <div class="card" style="background:linear-gradient(135deg,#e9f7ef,#ffffff)">
+            <h3 style="margin:0 0 8px">Миссия</h3>
+            <p class="muted">Делать доставку честной: без скрытых платежей и с ясными сроками. Мы оптимизируем маршруты, чтобы посылки приезжали быстрее.</p>
+            <ul style="margin:8px 0 0 20px">
+              <li>Прозрачные тарифы и страхование</li>
+              <li>Курьеры с обучением и проверкой</li>
+              <li>Экологичные маршруты и упаковка</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- REVIEWS -->
+    <section id="reviews">
+      <div class="container">
+        <h2 class="section-title">Отзывы клиентов</h2>
+        <p class="muted" style="margin-top:-6px">Пока временные примеры — заменим на реальные, как только вы пришлёте.</p>
+        <div class="testimonials">
+          <div class="card review">
+            <div class="avatar">А</div>
+            <div>
+              <div class="stars">★★★★★</div>
+              <p style="margin:4px 0 0">На следующий день посылка уже в постамате рядом с домом. Удобно и быстро.</p>
+              <p class="muted" style="margin:6px 0 0">Анна, Санкт-Петербург</p>
+            </div>
+          </div>
+          <div class="card review">
+            <div class="avatar">И</div>
+            <div>
+              <div class="stars">★★★★☆</div>
+              <p style="margin:4px 0 0">Курьер приехал вовремя, цена приятно удивила. Буду пользоваться ещё.</p>
+              <p class="muted" style="margin:6px 0 0">Игорь, Екатеринбург</p>
+            </div>
+          </div>
+          <div class="card review">
+            <div class="avatar">М</div>
+            <div>
+              <div class="stars">★★★★★</div>
+              <p style="margin:4px 0 0">Интегрировали виджет — оформление стало быстрее, меньше ошибок.</p>
+              <p class="muted" style="margin:6px 0 0">Мария, владелица магазина</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA band -->
+    <section aria-label="Блок оформления">
+      <div class="container card" style="display:flex;align-items:center;justify-content:space-between;gap:14px">
+        <div>
+          <h3 style="margin:0 0 4px">Готовы отправить посылку?</h3>
+          <p class="muted" style="margin:0">Оформление займёт меньше 2 минут.</p>
+        </div>
+        <a class="btn btn-primary" href="#order">Оформить отправку</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer" id="contacts" style="margin:30px 0 50px;color:#667085;text-align:center">
+    <div class="container">
+      <div>8 800 123-45-67 · support@example.ru</div>
+      <small style="display:block;margin-top:6px">ООО «Удобная доставка по России». Официальный сервис доставки по РФ.</small>
+    </div>
+  </footer>
+
+  <script>
+    // Простой демо-калькулятор
+    function calc(){
+      const from = document.getElementById('from').value.trim();
+      const to = document.getElementById('to').value.trim();
+      const w = Math.max(0.1, parseFloat(document.getElementById('weight').value||'1'));
+      const svc = document.getElementById('service').value;
+      const pseudo = Math.abs((from.length||5)-(to.length||8)) + (to.charCodeAt(0)||65)%7;
+      const base = 120 + pseudo*20;
+      const kg = 60 * w;
+      const mult = svc==='eco'?0.9 : svc==='std'?1.0 : 1.45;
+      const price = Math.round((base + kg) * mult);
+      const eta = svc==='eco'? '3–7 дней' : svc==='std'? '2–4 дня' : '1–2 дня';
+      document.getElementById('calcResult').textContent = `Ориентировочно: ${price.toLocaleString('ru-RU')} ₽ · Срок: ${eta}`;
+    }
+  </script>
+</body>
+</html>

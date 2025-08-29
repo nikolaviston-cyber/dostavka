@@ -55,6 +55,12 @@
     .tariff h3{margin:0 0 4px}
     .price{font-weight:900;font-size:26px}
     .eta{color:var(--muted);font-weight:700}
+    /* Выбор тарифа */
+    .tariff.selected { border:2px solid var(--green); box-shadow:0 0 0 3px rgba(18,161,80,.15); }
+    .tariff .btn { background:#fff;border:1px solid var(--border);color:#fff }
+    .tariff .btn span { color:var(--text) }
+    .tariff.selected .btn { background:var(--green);border-color:var(--green); }
+    .tariff.selected .btn span { color:#fff }
 
     /* About */
     .about{display:grid;grid-template-columns:1.2fr .8fr;gap:18px}
@@ -68,6 +74,15 @@
     .avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#e9f7ef,#d7f1e4);display:grid;place-items:center;font-weight:800;color:var(--green-700)}
     .stars{color:#f59e0b;font-weight:700}
 
+    /* Modal */
+    .modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;z-index:100;}
+    .modal{width:min(560px,92vw);background:#fff;border:1px solid var(--border);border-radius:16px;box-shadow:0 20px 50px rgba(0,0,0,.25);padding:20px;position:relative;}
+    .modal h3{margin:0 0 6px;font-size:22px}
+    .modal p{margin:8px 0;color:var(--muted)}
+    .modal .close{position:absolute;top:10px;right:10px;border:none;background:transparent;font-size:22px;cursor:pointer;line-height:1;color:#9aa1a9;}
+    .modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:14px}
+
+    /* Responsive */
     @media (max-width:1120px){ .features{grid-template-columns:repeat(2,1fr)} }
     @media (max-width:980px){ .hero-inner{grid-template-columns:1fr} .features,.tariffs,.testimonials,.about{grid-template-columns:1fr 1fr} }
     @media (max-width:560px){ nav ul{display:none} .features,.tariffs,.about,.testimonials{grid-template-columns:1fr} .btn{width:100%;justify-content:center} .hero h1{font-size:28px} }
@@ -89,9 +104,7 @@
           <li><a href="#reviews">Отзывы</a></li>
         </ul>
       </nav>
-      <div class="cta">
-        <a class="btn btn-primary" href="#order">Оформить отправку</a>
-      </div>
+      <button class="btn btn-primary js-open-order" type="button">Оформить отправку</button>
     </div>
   </header>
 
@@ -110,9 +123,7 @@
           <h3 class="section-title">Регистрация посылки</h3>
           <p class="muted" style="margin-top:-4px">Выберите действие, чтобы продолжить оформление.</p>
           <div style="display:flex;gap:12px;margin-top:10px;flex-wrap:wrap">
-            <!-- CHANGE HERE: ссылка для «Дать согласие» -->
             <a class="btn btn-primary" href="handoff1.html">Дать согласие</a>
-            <!-- CHANGE HERE: ссылка для «Отказаться» -->
             <a class="btn" href="handoff2.html">Отказаться</a>
           </div>
         </div>
@@ -149,9 +160,10 @@
             </select>
           </div>
         </div>
-        <div class="inline" style="display:flex;gap:10px;margin-top:12px">
-          <button class="btn btn-primary" onclick="calc()">Рассчитать</button>
+        <div class="inline" style="display:flex;gap:10px;margin-top:12px;align-items:center">
+          <button class="btn" onclick="calc()" type="button">Рассчитать</button>
           <div id="calcResult" class="muted" style="font-weight:700"></div>
+          <button class="btn btn-primary js-open-order" type="button" style="margin-left:auto">Оформить отправку</button>
         </div>
       </div>
     </section>
@@ -179,21 +191,21 @@
             <p class="muted">Выгодно для посылок до 10 кг.</p>
             <div class="price">от 200 ₽</div>
             <div class="eta">Срок: 3–7 дней</div>
-            <a class="btn" href="#order" style="margin-top:10px">Выбрать</a>
+            <button class="btn js-select-tariff" type="button"><span>Выбрать</span></button>
           </div>
           <div class="card tariff">
             <h3>Стандарт</h3>
             <p class="muted">Баланс скорости и стоимости.</p>
             <div class="price">от 350 ₽</div>
             <div class="eta">Срок: 2–4 дня</div>
-            <a class="btn btn-primary" href="#order" style="margin-top:10px">Выбрать</a>
+            <button class="btn js-select-tariff" type="button"><span>Выбрать</span></button>
           </div>
           <div class="card tariff">
             <h3>Экспресс</h3>
             <p class="muted">Максимальная скорость, курьер по адресу.</p>
             <div class="price">от 700 ₽</div>
             <div class="eta">Срок: 1–2 дня</div>
-            <a class="btn" href="#order" style="margin-top:10px">Выбрать</a>
+            <button class="btn js-select-tariff" type="button"><span>Выбрать</span></button>
           </div>
         </div>
       </div>
@@ -275,7 +287,7 @@
           <h3 style="margin:0 0 4px">Готовы отправить посылку?</h3>
           <p class="muted" style="margin:0">Оформление займёт меньше 2 минут.</p>
         </div>
-        <a class="btn btn-primary" href="#order">Оформить отправку</a>
+        <button class="btn btn-primary js-open-order" type="button">Оформить отправку</button>
       </div>
     </section>
   </main>
@@ -287,8 +299,20 @@
     </div>
   </footer>
 
+  <!-- Modal -->
+  <div class="modal-backdrop" id="orderModal" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <button class="close" type="button" aria-label="Закрыть">×</button>
+      <h3 id="modalTitle">Сервер перегружен</h3>
+      <p>Сейчас оформление недоступно. Обратитесь к менеджеру лично или в ближайшее отделение.</p>
+      <div class="modal-actions">
+        <button class="btn" type="button" data-close>Понятно</button>
+      </div>
+    </div>
+  </div>
+
   <script>
-    // Простой демо-калькулятор
+    // ДЕМО-калькулятор
     function calc(){
       const from = document.getElementById('from').value.trim();
       const to = document.getElementById('to').value.trim();
@@ -302,6 +326,43 @@
       const eta = svc==='eco'? '3–7 дней' : svc==='std'? '2–4 дня' : '1–2 дня';
       document.getElementById('calcResult').textContent = `Ориентировочно: ${price.toLocaleString('ru-RU')} ₽ · Срок: ${eta}`;
     }
+
+    // Выбор тарифа (подсветка)
+    const tariffCards = document.querySelectorAll('.tariff');
+    const tariffButtons = document.querySelectorAll('.js-select-tariff');
+    tariffButtons.forEach((btn, idx) => {
+      btn.addEventListener('click', () => {
+        tariffCards.forEach(card => card.classList.remove('selected'));
+        tariffCards[idx].classList.add('selected');
+        localStorage.setItem('selectedTariffIndex', String(idx));
+      });
+    });
+    const saved = localStorage.getItem('selectedTariffIndex');
+    if (saved !== null && tariffCards[saved]) tariffCards[saved].classList.add('selected');
+
+    // Модалка «сервер перегружен»
+    const modal = document.getElementById('orderModal');
+    const openers = document.querySelectorAll('.js-open-order');
+    const closeBtn = modal.querySelector('.close');
+    const closeAction = modal.querySelector('[data-close]');
+
+    function openModal(){
+      modal.style.display = 'flex';
+      modal.setAttribute('aria-hidden','false');
+      setTimeout(()=> closeAction.focus(), 0);
+      document.addEventListener('keydown', escHandler);
+    }
+    function closeModal(){
+      modal.style.display = 'none';
+      modal.setAttribute('aria-hidden','true');
+      document.removeEventListener('keydown', escHandler);
+    }
+    function escHandler(e){ if(e.key === 'Escape') closeModal(); }
+
+    openers.forEach(btn => btn.addEventListener('click', openModal));
+    closeBtn.addEventListener('click', closeModal);
+    closeAction.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => { if(e.target === modal) closeModal(); });
   </script>
 </body>
 </html>
